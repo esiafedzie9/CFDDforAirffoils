@@ -1,4 +1,5 @@
 import numpy as np
+import math
 
 
 class Geometry(object):
@@ -75,16 +76,36 @@ class Geometry(object):
             points = np.array(points)
         self._points = points
         self._n_points = np.size(points)
-    
-    def area(self):
-        # integrate
-        x = self.x
-        y = self.y
-        area = np.trapz(x=x, y=y)
-        return area
-    
+
+
+class Ellipse(Geometry):
+
+    def __init__(self, a, b, n):
+        super().__init__()
+        self.n = n
+        theta = np.linspace(0, 360, self.n+1)
+        theta = theta[:-1]
+        self._x = []
+        self._y = []
+        points = []
+        for num in theta:  
+            d = b*math.cos((num*math.pi)/180)
+            self._x.append(d)
+            f = a*math.sin((num*math.pi)/180)
+            self._y.append(f)
+            points.append([d, f])
+        self.points = points
+
 
 class Rectangle(Geometry):
-
-    def __init__(self):
+    def __init__(self, width, height, n):
         super().__init__()
+        self.n = n
+        c = np.linspace(0, 2*math.pi, self.n + 1)
+        self.t = c[:-1]
+        x = width * (np.abs(np.cos(self.t))*np.cos(self.t) + np.abs(np.sin(self.t))*np.sin(self.t)) 
+        y = height * (np.abs(np.cos(self.t))*np.cos(self.t) - np.abs(np.sin(self.t))*np.sin(self.t)) 
+        points = []
+        for a, b in zip(x, y):
+            points.append([a,b])
+        self.points = points
