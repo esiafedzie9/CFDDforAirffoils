@@ -20,19 +20,24 @@ class Geometry(object):
             summ += s
         if summ < 0:
             print('reversed')
-            self.points = self.points[:len(self.points):-1]
+            self.points = self.points[::-1]
         else:
             print('not reversed')
 
     def create_panels(self):
         self.s = []
         self.c = []
+        self.beta = []
         for i in range(0, len(self.points)-1):
-            a = (self.points[1+i][0] - self.points[i][0])/2
-            b = (self.points[1+i][1] - self.points[i][1])/2
+            a = (self.points[1+i][0] + self.points[i][0])/2
+            b = (self.points[1+i][1] + self.points[i][1])/2
             self.c.append([a,b])
             d = math.sqrt((self.points[1+i][0] - self.points[i][0])**2 +(self.points[1+i][1] - self.points[i][1])**2)
             self.s.append(d)
+            dx = (self.points[1+i][0] - self.points[i][0])
+            dy = (self.points[1+i][1] - self.points[i][1])
+            grad = math.atan2(dy, dx) + math.pi/2
+            self.beta.append(grad)
 
     @property
     def points(self):
@@ -159,11 +164,15 @@ class AirfoilParser(object):
 
 
     def parse(self):
+        # instead of 'data/airfoil/a18.dat'
+        # os.path.join('data/Airfoils', 'a18.dat')
         full_path = os.path.join('data/Airfoils', self._file)
         upper = []
         lower = []
         is_upper = True
         prev = 2
+
+        
         with open(full_path, 'r') as airfoil_file:
             for line in airfoil_file.readlines():
                 content = line.split(' ')
