@@ -1,6 +1,6 @@
 import numpy as np
 import os
-from scipy.interpolate import CubicSpline
+from scipy.interpolate import interp1d
 import math
 
 
@@ -210,8 +210,9 @@ class Airfoil(Geometry):
     def __init__(self, file=None, centroid=[0, 0], n_points=40) -> None:
         super().__init__()
         self._file = file
-        points = self.getairfoil(file)
         self._n_points = n_points
+        points = self.getairfoil(file)
+        
         self.points = points
         
     
@@ -220,8 +221,8 @@ class Airfoil(Geometry):
         self._file = file
         upper_points = airfoil_data.upper
         lower_points = airfoil_data.lower
-        upper_points_interp = CubicSpline(upper_points[:, 0][::-1], upper_points[:, 1:][::-1], extrapolate=True)
-        lower_points_interp = CubicSpline(lower_points[:, 0], lower_points[:, 1:], extrapolate=True)
+        upper_points_interp = interp1d(upper_points[:, 0][::-1], upper_points[:, 1][::-1], fill_value='extrapolate')
+        lower_points_interp = interp1d(lower_points[:, 0], lower_points[:, 1], fill_value='extrapolate')
         x = np.linspace(0, 1, self._n_points) ** 1.4
         upper_points = upper_points_interp(x)
         lower_points = lower_points_interp(x)

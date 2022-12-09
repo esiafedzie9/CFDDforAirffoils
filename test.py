@@ -1,16 +1,20 @@
-from control_volume.geometry import Geometry,Ellipse
-
+from control_volume.geometry import Geometry,Ellipse,Airfoil
+from plot import PLOT
 import math
 import numpy as np
 import matplotlib.pyplot as plt
 
 e = Ellipse(2, 6, 10)
 e.create_panels()
+PLOT(e)
 # d = e.wind()
 
 
 
-file = 'data/example.txt'
+
+file = ''
+airfoil = Airfoil('naca2412.dat')
+PLOT(airfoil)
 # f = open(file, 'w')
 # f.write('hello Adotey!\nHow are yiw')
 # f.close()
